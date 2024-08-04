@@ -5,36 +5,33 @@ Sub RemoveLineBreaks()
     Dim isFirstLine As Boolean
     Dim selectedText As String
     
-    isFirstLine = True ' ±ê¼ÇÎªµÚÒ»ĞĞ | Mark as the first line
+    isFirstLine = True ' æ ‡è®°ä¸ºç¬¬ä¸€è¡Œ | Mark as the first line
     
-    ' »ñÈ¡Ñ¡¶¨µÄÎÄ±¾ | Get the selected text
+    ' è·å–é€‰å®šçš„æ–‡æœ¬ | Get the selected text
     selectedText = Selection.text
-    
-    ' ½«Ñ¡¶¨µÄÎÄ±¾²ğ·ÖÎª¶àĞĞ | Split the selected text into multiple lines
-    Dim arrText() As String ' arrText ÎªÊı×é
-    arrText = Split(selectedText, vbCr)
-    ' Ö»ÄÜÊ¶±ğvbCr£¬´ı¸Ä½ø | Only recognizes vbCr, needs improvement
 
-    For i = 0 To UBound(arrText) ' UBound()·µ»ØÊı×éÖĞ×î¸ßÏÂ±êµÄÖµ | UBound() returns the highest index of the array
-        
-        arrText(i) = RemoveNewLines(arrText(i))
+    ' ç»Ÿä¸€æ¢è¡Œç¬¦ | Standardize line breaks
+    selectedText = Replace(Replace(selectedText, vbCrLf, vbCr), vbLf, vbCr)
+
+    ' å°†é€‰å®šçš„æ–‡æœ¬æ‹†åˆ†ä¸ºå¤šè¡Œ | Split the selected text into multiple lines
+    Dim arrText() As String ' arrText ä¸ºæ•°ç»„ | arrText is an array
+    arrText = Split(selectedText, vbCr)
+
+    For i = 0 To UBound(arrText) ' UBound()è¿”å›æ•°ç»„ä¸­æœ€é«˜ä¸‹æ ‡çš„å€¼ | UBound() returns the highest index of the array
         
         If arrText(i) <> "" Then
-            If Not isFirstLine And allInput <> "" Then ' ·ÇÊ×ĞĞÇÒallInput·Ç¿Õ | Not the first line and allInput is not empty
+            If Not isFirstLine And allInput <> "" Then ' éé¦–è¡Œä¸”allInputéç©º | Not the first line and allInput is not empty
                 allInput = allInput & "//"
             End If
             
             allInput = allInput & arrText(i)
-            isFirstLine = False ' ÒÑ´¦ÀíÖÁÉÙÒ»ĞĞ·Ç¿ÕÄÚÈİ | At least one non-empty line has been processed
+            isFirstLine = False ' å·²å¤„ç†è‡³å°‘ä¸€è¡Œéç©ºå†…å®¹ | At least one non-empty line has been processed
         End If
         
         Next i
 
-    If MsgBox("µã»÷È·ÈÏÌæ»»ÎÄ±¾ | Click OK to replace the text" & vbCrLf & allInput, vbOKCancel) = 1 Then
+    If MsgBox("ç‚¹å‡»ç¡®è®¤æ›¿æ¢æ–‡æœ¬ | Click OK to replace the text" & vbCrLf & allInput, vbOKCancel) = 1 Then
+        ' å¦‚æœç”¨æˆ·ç‚¹å‡» OKï¼Œåˆ™æ›¿æ¢é€‰å®šæ–‡æœ¬ | If the user clicks OK, replace the selected text
         Selection.TypeText allInput
     End If
 End Sub
-
-Function RemoveNewLines(text As String) As String
-    RemoveNewLines = Replace(Replace(text, vbLf, ""), vbCrLf, "")
-End Function
